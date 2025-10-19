@@ -1,0 +1,323 @@
+`<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link rel="preload" as="video" href="./assets/intro.mp4" />
+    <link rel="preload" as="video" href="./assets/ending.mp4" />
+    <link rel="preload" as="video" href="./assets/credits.mp4" /> -->
+    <link rel="preload" as="image" href="./assets/start.png" />
+    <link rel="preload" as="image" href="./assets/main_menu.png" />
+    <link rel="preload" as="image" href="./assets/icon.png" />
+    <!-- <link rel="preload" as="audio" href="./assets/bgm.mp3" /> -->
+    <title>MARSHMALLOW SQUAD!</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div id="gameContainer">
+      <!-- Loading overlay -->
+      <div
+        id="loadingOverlay"
+        style="
+          display: none;
+          position: absolute;
+          inset: 0;
+          z-index: 10050;
+          background: rgba(0, 0, 0, 0.85);
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+        "
+      >
+        <div
+          class="spinner"
+          style="
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 6px solid #fff;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+          "
+        ></div>
+        <div
+          id="loadingText"
+          style="margin-top: 14px; color: #fff; font-size: 16px; opacity: 0.9"
+        >
+          Loading…
+        </div>
+      </div>
+      <!-- White dissolve overlay (kết thúc game) -->
+      <div
+        id="fxDissolve"
+        style="display: none; position: absolute; inset: 0; z-index: 9999"
+      >
+        <canvas
+          id="fxDissolveCanvas"
+          style="width: 100%; height: 100%; display: block"
+        ></canvas>
+      </div>
+
+      <!-- Màn hình bắt đầu -->
+      <div id="startScreen">
+        <div id="titleScreen">
+          <button class="start-btn" onclick="playVideo1()">
+            <img src="./assets/playbutton.png" width: 100%;height: auto;display: block;/>
+          </button>
+        </div>
+      </div>
+
+      <!-- Màn hình video -->
+      <div id="videoScreen">
+        <video id="videoPlayer" controls>
+          Video is not supported by your browser.
+        </video>
+        <div class="video-controls">
+          <button class="skip-btn" id="skipVideoBtn"></button>
+        </div>
+      </div>
+
+      <!-- Màn hình start menu-->
+      <div id="startMenu">
+        <button class="start" onclick="playCutscene()">
+          <img src="./assets/icon.png" />
+        </button>
+      </div>
+
+      <!--Màn hình cutscene1-->
+      <div
+        id="Cutscene1"
+        style="
+          position: absolute;
+          inset: 0;
+          margin: 0;
+          padding: 0;
+          box-shadow: none;
+          border-radius: 0;
+          display: none;
+          z-index: 110;
+        "
+      >
+        <iframe
+          loading="lazy"
+          style="
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 0;
+            margin: 0;
+          "
+          src="https://www.canva.com/design/DAG0_X5pbBw/F0I4QPE6PjnKm-KMemj-2g/view?embed"
+          allow="fullscreen"
+        >
+        </iframe>
+      </div>
+
+      <!-- Overlay text + bắt click để kết thúc (chỉ bật sau khi unlock) -->
+      <div
+        id="cutsceneControls"
+        style="
+          display: none;
+          position: absolute;
+          inset: 0;
+          z-index: 120;
+          pointer-events: none;
+        "
+      >
+        <div
+          id="tapAnywhere"
+          style="
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font: 600 18px/1.2 system-ui;
+            color: #fff;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.85);
+          "
+        >
+          Please wait…
+        </div>
+      </div>
+
+      <!--Màn hình chính-->
+      <div id="mainGame">
+        <div id="menu-options">
+          <button id="battleButton" onclick="showBattleStartScreen()">
+            <img src="./assets/battle.png" />
+          </button>
+          <button id="characterButton" onclick="showCharacterMenu()">
+            <img src="./assets/character.png" />
+          </button>
+        </div>
+      </div>
+
+      <!-- Màn hình bắt đầu cuộc chiến -->
+      <div id="battleStartScreen">
+        <h1 class="battle-title">START THE BATTLE!</h1>
+        <p class="battle-subtitle">are you ready to save the world??</p>
+        <button class="battle-btn" onclick="startBattle()">Ready!!</button>
+      </div>
+
+      <!--Màn hình nhân vật-->
+      <div id="characterScreen" class="char-grid" style="display: none">
+        <!-- Trái: Tall -->
+        <button id="tall" class="char-side">
+          <img src="./assets/tall.png" alt="Tall" />
+        </button>
+
+        <!-- Tiêu đề ở giữa trên -->
+        <h1 id="charName" class="char-title">Vanilla</h1>
+
+        <!-- Cụm thông tin ở giữa (chỉ một trong 2 khối dưới sẽ hiện) -->
+        <div id="tall_stats" class="info-col" hidden>
+          <div id="stats1" class="card">
+            <h3>STATS:</h3>
+            <p>
+              10
+              <img
+                class="icon"
+                src="https://static.vecteezy.com/system/resources/previews/016/589/188/original/heart-8bit-pixel-png.png"
+                alt=""
+              />
+            </p>
+            <p>10 <img class="icon" src="./assets/battle.png" alt="" /></p>
+          </div>
+          <div id="weapon1" class="card">
+            <h3>WEAPON:</h3>
+            <img class="weapon-img" src="./assets/gun.png" alt="" />
+          </div>
+        </div>
+
+        <div id="hard_stats" class="info-col" hidden>
+          <div id="stats2" class="card">
+            <h3>STATS:</h3>
+            <p>
+              10
+              <img
+                class="icon"
+                src="https://static.vecteezy.com/system/resources/previews/016/589/188/original/heart-8bit-pixel-png.png"
+                alt=""
+              />
+            </p>
+            <p>10 <img class="icon" src="./assets/battle.png" alt="" /></p>
+          </div>
+          <div id="weapon2" class="card">
+            <h3>WEAPON:</h3>
+            <img class="weapon-img" src="./assets/staff.png" alt="" />
+          </div>
+        </div>
+
+        <!-- Phải: Hard -->
+        <button id="hard" class="char-side">
+          <img src="./assets/hard.png" alt="Hard" />
+        </button>
+
+        <!-- (tuỳ chọn) nút Home góc phải trên -->
+        <button
+          id="btnHome"
+          class="home-btn"
+          title="Home"
+          onclick="showMainMenu()"
+        >
+          ⌂
+        </button>
+      </div>
+
+      <!-- Màn hình game -->
+      <div id="gameScene">
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- UI Game -->
+        <div id="gameUI">
+          <div class="health-bar">
+            <div class="health-fill" id="healthBar"></div>
+          </div>
+          <div class="health-text" id="healthText">HP: 100/100</div>
+          <div class="score" id="score">Score: 0</div>
+          <div class="combo" id="combo">Combo: 0x</div>
+          <div class="victory-goal" id="victoryGoal">
+            Objective: 0/200 Score
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+        </div>
+
+        <!-- Điều khiển Desktop -->
+        <div id="controls">
+          <button class="control-btn" id="attackBtn" onclick="playerAttack()">
+            Attack (Space)
+          </button>
+          <button class="control-btn" id="shieldBtn" onclick="activateShield()">
+            Shield (R)
+          </button>
+          <button class="control-btn" id="specialBtn" onclick="specialAttack()">
+            Special (T)
+          </button>
+        </div>
+
+        <!-- Điều khiển Mobile -->
+        <div id="mobileControls">
+          <button
+            class="mobile-btn"
+            id="mobileShield"
+            onclick="activateShield()"
+          >
+            S
+          </button>
+          <button
+            class="mobile-btn"
+            id="mobileSpecial"
+            onclick="specialAttack()"
+          >
+            D
+          </button>
+          <button class="mobile-btn" id="mobileAttack" onclick="playerAttack()">
+            ⚡
+          </button>
+        </div>
+      </div>
+
+      <!-- Màn hình kết thúc -->
+      <div id="gameOver">
+        <div class="game-over-text" id="gameOverText">Failed</div>
+        <div class="final-score" id="finalScore">Score: 0</div>
+        <button class="restart-btn" onclick="restartGame()">Restart?</button>
+      </div>
+
+      <!-- Màn hình chiến thắng -->
+      <div id="victoryScreen">
+        <div class="victory-title">Victory!!</div>
+        <div class="victory-message" id="victoryMessage">
+          You have achived 200 scores and saved Cotton Cloudia!
+        </div>
+        <div class="final-score" id="victoryScore">Score: 0</div>
+        <button class="start-btn" onclick="playVideo2()">
+          End the madness
+        </button>
+      </div>
+    </div>
+    <button
+      id="bgmToggle"
+      style="
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        z-index: 10060;
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        border: 2px solid #fff;
+        background: rgba(0, 0, 0, 0.4);
+        color: #fff;
+      "
+    >
+      🔇
+    </button>
+
+    <script src="script.js"></script>
+  </body>
+</html>

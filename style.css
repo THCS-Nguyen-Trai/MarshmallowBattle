@@ -1,0 +1,947 @@
+* {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Arial Rounded MT Bold", "Arial", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        color: white;
+        overflow: hidden;
+        min-height: 100vh;
+        touch-action: none;
+        user-select: none;
+      }
+
+      #gameContainer {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* Màn hình bắt đầu */
+      #startScreen {
+         display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100vw;
+        height: 100vh;
+        background: url("./assets/titlemenu.png") center/cover no-repeat;
+        overflow: hidden;
+      }
+
+      #titleScreen {
+        position: absolute;
+        top: 0%;
+        left: 0%;
+        width: 100%;
+        height: 100%;
+        background-image: url("./assets/titlemenu.png");
+        background-size: cover;
+      }
+
+      .title {
+        font-size: 4rem;
+        color: #ff69b4;
+        text-shadow: 0 0 20px rgba(255, 105, 180, 0.7);
+        margin-bottom: 2rem;
+        text-align: center;
+        animation: titlePulse 2s infinite;
+      }
+
+      @keyframes titlePulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      .subtitle {
+        text-align: justify; /* Căn đều hai bên */
+        text-justify: inter-word; /* Căn theo khoảng cách giữa các từ */
+        font-family: "Mango", cursive, fantasy;
+        font-size: clamp(
+          16px,
+          2vw,
+          20px
+        ); /* Font tự động co giãn theo màn hình */
+        line-height: 1.8; /* Khoảng cách dòng thoáng dễ đọc */
+        color: #fefefe; /* Màu chữ (có thể đổi tuỳ nền) */
+        background: #1a1a1a; /* Nền tối để nổi bật hơn */
+        max-width: 1400px; /* Giới hạn độ rộng tối đa để dễ đọc */
+        margin: 5vh auto; /* Căn giữa theo chiều ngang, cách đều trên/dưới */
+        padding: 2rem 5vw; /* Tạo lề trong để không dính sát màn hình */
+        border-radius: 12px; /* Bo góc cho đẹp */
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      }
+
+      .start-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: clamp(100px, 15vw, 200px); /* tự co giãn theo màn hình */
+        height: auto;
+        transition: transform 0.3s ease;
+      }
+
+      .restart-btn {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color:rgba(255, 118, 129, 0.452);
+        border-radius: 20px;
+        width: 100px;
+        height: 50px;
+      }
+
+      @keyframes btnGlow {
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+        }
+        50% {
+          box-shadow: 0 0 30px rgba(255, 105, 180, 0.8);
+        }
+      }
+
+      .start-btn:hover {
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+      }
+
+      /* Màn hình video */
+      #videoScreen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 95;
+      }
+
+      #videoPlayer {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        background: black;
+      }
+
+      .video-controls {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 20px;
+        z-index: 96;
+      }
+      #videoPlayer::-webkit-media-controls,
+      #videoPlayer::-webkit-media-controls-panel,
+      #videoPlayer::-webkit-media-controls-play-button,
+      #videoPlayer::-webkit-media-controls-timeline,
+      #videoPlayer::-webkit-media-controls-current-time-display,
+      #videoPlayer::-webkit-media-controls-time-remaining-display,
+      #videoPlayer::-webkit-media-controls-timeline-container,
+      #videoPlayer::-webkit-media-controls-volume-slider,
+      #videoPlayer::-webkit-media-controls-mute-button,
+      #videoPlayer::-webkit-media-controls-fullscreen-button,
+      #videoPlayer::-webkit-media-controls-overlay-play-button {
+        display: none !important;
+      }
+
+      .skip-btn {
+        background: none;
+        border: none;
+      }
+      /* .skip-btn:hover {
+        background: rgba(255, 105, 180, 1);
+        transform: scale(1.05);
+      } */
+
+      /* Màn hình bắt đầu cuộc chiến */
+      #battleStartScreen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("");
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 90;
+      }
+
+      .battle-title {
+        font-size: 4rem;
+        color: #ff4500;
+        text-shadow: 0 0 20px rgba(255, 69, 0, 0.7);
+        margin-bottom: 2rem;
+        text-align: center;
+        animation: battlePulse 1.5s infinite;
+      }
+      @keyframes battlePulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+      .battle-subtitle {
+        font-size: 1.8rem;
+        color: #ffb6c1;
+        margin-bottom: 3rem;
+        text-align: center;
+        max-width: 600px;
+      }
+      .battle-btn {
+        padding: 15px 40px;
+        font-size: 1.5rem;
+        background: linear-gradient(135deg, #ff4500, #ff0000);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s;
+        animation: battleBtnGlow 1.5s infinite;
+      }
+      @keyframes battleBtnGlow {
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(255, 69, 0, 0.5);
+        }
+        50% {
+          box-shadow: 0 0 30px rgba(255, 69, 0, 0.8);
+        }
+      }
+      .battle-btn:hover {
+        transform: scale(1.1);
+        animation: none;
+        box-shadow: 0 0 40px rgba(255, 69, 0, 1);
+      }
+
+      /* Game scene */
+      #gameScene {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+      }
+      #gameCanvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* UI Game */
+      #gameUI {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 10;
+      }
+      .health-bar {
+        width: 200px;
+        height: 25px;
+        background: rgba(0, 0, 0, 0.7);
+        border: 2px solid #ff69b4;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 10px;
+      }
+      .health-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #ff0000, #ff4500);
+        width: 100%;
+        transition: width 0.3s ease-out;
+      }
+      .health-text {
+        color: white;
+        font-size: 1.1rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
+      .score {
+        color: #ffd700;
+        font-size: 1.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        margin-top: 10px;
+      }
+      .combo {
+        color: #00ff00;
+        font-size: 1.2rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        margin-top: 5px;
+      }
+      .victory-goal {
+        color: #ff69b4;
+        font-size: 1.3rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        margin-top: 10px;
+        font-weight: bold;
+      }
+      .progress-container {
+        width: 300px;
+        height: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        border: 2px solid #ff69b4;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 5px;
+      }
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #ff69b4, #ff1493);
+        width: 0%;
+        transition: width 0.5s ease-out;
+      }
+
+      /* Controls */
+      #controls {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        display: flex;
+        gap: 15px;
+        z-index: 10;
+      }
+      .control-btn {
+        padding: 12px 25px;
+        background: rgba(255, 105, 180, 0.7);
+        border: 2px solid #ff69b4;
+        border-radius: 10px;
+        color: white;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .control-btn:hover {
+        background: rgba(255, 105, 180, 1);
+        transform: scale(1.05);
+      }
+      .control-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .control-btn.active {
+        background: orange;
+        transform: scale(1.1);
+      }
+
+      /* Game Over */
+      #gameOver {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 20;
+      }
+      .game-over-text {
+        font-size: 3rem;
+        color: #ff69b4;
+        margin-bottom: 2rem;
+        animation: gameOverPulse 1.5s infinite;
+      }
+      @keyframes gameOverPulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+      .final-score {
+        font-size: 2rem;
+        color: #ffd700;
+        margin-bottom: 2rem;
+      }
+
+      /* Victory Screen */
+      #victoryScreen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 25;
+      }
+      .victory-title {
+        font-size: 4rem;
+        color: #ffd700;
+        text-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+        margin-bottom: 2rem;
+        animation: victoryPulse 2s infinite;
+      }
+      @keyframes victoryPulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+      .victory-message {
+        font-size: 1.8rem;
+        color: #ffb6c1;
+        margin-bottom: 2rem;
+        text-align: center;
+        max-width: 600px;
+      }
+
+      /* Mobile Controls */
+      #mobileControls {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 10;
+      }
+      .mobile-btn {
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 105, 180, 0.7);
+        border: 2px solid #ff69b4;
+        border-radius: 50%;
+        color: white;
+        font-size: 1.2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+
+      /* Combo Effect */
+      .combo-popup {
+        position: absolute;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #ffd700;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        animation: comboFloat 1s ease-out forwards;
+        z-index: 15;
+      }
+      @keyframes comboFloat {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-100px) scale(1.5);
+          opacity: 0;
+        }
+      }
+
+      /* Victory Effect */
+      .victory-particle {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ffd700;
+        animation: victoryFloat 3s ease-out forwards;
+        z-index: 15;
+      }
+      @keyframes victoryFloat {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-200px) scale(0);
+          opacity: 0;
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .title {
+          font-size: 2.5rem;
+        }
+        .subtitle {
+          font-size: 1.2rem;
+          padding: 0 20px;
+        }
+        .battle-title {
+          font-size: 2.5rem;
+        }
+        .battle-subtitle {
+          font-size: 1.3rem;
+          padding: 0 20px;
+        }
+        .victory-title {
+          font-size: 2.5rem;
+        }
+        .victory-message {
+          font-size: 1.3rem;
+          padding: 0 20px;
+        }
+        #mobileControls {
+          display: flex;
+        }
+        #controls {
+          display: none;
+        }
+        #videoPlayer {
+          width: 95%;
+          height: 60%;
+        }
+      }
+
+      #startMenu {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("./assets/start.png");
+        background-size: cover;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 80;
+      }
+
+      .start {
+        position: absolute;
+        top: 65%;
+        left: 45%;
+        width: 200px;
+        height: 200px;
+        transform: scale(1);
+        transition: transform 0.3s ease;
+        background: none;
+        border: none;
+      }
+
+      .start:hover {
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+        cursor: pointer;
+      }
+
+      #mainGame {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("./assets/main_menu.png");
+        background-size: cover;
+        display: none;
+        flex-direction: row;
+        z-index: 70;
+      }
+
+      #menu-optiones {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        gap: 20px;
+        z-index: 71;
+      }
+
+      #battleButton,
+      #characterButton {
+        width: 150px;
+        height: 150px;
+        background: none;
+        border: none;
+        transform: scale(1);
+        transition: transform 0.3s ease;
+      }
+
+      #battleButton:hover,
+      #characterButton:hover {
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+        cursor: pointer;
+      }
+
+      #characterScreen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #4f5277;
+        z-index: 75;
+      }
+
+      #tall,
+      #hard {
+        position: absolute; /* để dùng left/right/top */
+        width: 500px;
+        height: 500px;
+        padding: 0;
+        border: none;
+        background: none;
+        display: inline-flex; /* canh giữa nội dung */
+        align-items: center;
+        justify-content: center;
+        overflow: hidden; /* nếu ảnh lớn hơn thì không phình nút */
+        transform: scale(1);
+        transition: transform 0.3s ease;
+      }
+
+      #tall {
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      #hard {
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      #tall img,
+      #hard img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain; /* hoặc cover nếu muốn “đầy” */
+        display: block;
+      }
+
+      #tall:hover,
+      #hard:hover {
+        transform: translateY(-50%) scale(1.1);
+        transition: transform 0.3s ease;
+        cursor: pointer;
+      }
+
+      #hard_stats,
+      #tall_stats {
+        position: absolute;
+        top: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 500px;
+        height: 200px;
+        z-index: 76;
+      }
+
+      #tall_stats[hidden],
+      #hard_stats[hidden] {
+        display: none !important;
+      }
+
+      #stats1,
+      #weapon1 {
+        display: inline-block;
+        width: 200px;
+        height: 200px;
+        margin: 20px;
+        padding: 10px;
+        border: 2px solid white;
+        border-radius: 10px;
+        text-align: center;
+        position: relative;
+      }
+      #stats1 h3,
+      #weapon1 h1 {
+        margin-bottom: 10px;
+        font-size: 1.5rem;
+        color: #ff69b4;
+        position: relative;
+      }
+      #stats1 h5,
+      #weapon1 h5 {
+        margin: 5px 0;
+        font-size: 1.2rem;
+        color: white;
+        position: relative;
+      }
+      #stats1 img,
+      #weapon1 img {
+        width: 50px;
+        height: 50px;
+        vertical-align: middle;
+        margin-right: 8px;
+        position: relative;
+      }
+      #stats2,
+      #weapon2 {
+        display: inline-block;
+        width: 200px;
+        height: 200px;
+        margin: 20px;
+        padding: 10px;
+        border: 2px solid white;
+        border-radius: 10px;
+        text-align: center;
+        position: relative;
+      }
+      #stats2 h3,
+      #weapon2 h1 {
+        margin-bottom: 10px;
+        font-size: 1.5rem;
+        color: #ff69b4;
+        position: relative;
+      }
+      #stats2 h5,
+      #weapon2 h5 {
+        margin: 5px 0;
+        font-size: 1.2rem;
+        color: white;
+        position: relative;
+      }
+      #stats2 img,
+      #weapon2 img {
+        width: 50px;
+        height: 50px;
+        vertical-align: middle;
+        margin-right: 8px;
+        position: relative;
+      }
+
+      .type-line {
+        /* nên dùng font monospace để steps(…) khớp từng ký tự */
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas,
+          "Liberation Mono", monospace;
+        width: 1098ch; /* = số ký tự của dòng */
+        white-space: nowrap;
+        overflow: hidden;
+        border-right: 3px solid #ff69b4; /* con trỏ nhấp nháy */
+        animation: typing 2.8s steps(20, end), caret 0.6s step-end infinite;
+      }
+      @keyframes typing {
+        from {
+          width: 0;
+        }
+        to {
+          width: 20ch;
+        }
+      }
+      @keyframes caret {
+        50% {
+          border-color: transparent;
+        }
+      }
+
+      /* Lưới 3 cột: trái (Tall) – giữa (title + info) – phải (Hard) */
+      .char-grid {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        grid-template-columns: 1fr clamp(340px, 40vw, 520px) 1fr;
+        grid-template-rows: auto auto auto; /* title, stats, weapon */
+        grid-template-areas:
+          "left  title  right"
+          "left  stats  right"
+          "left  weapon right";
+        align-items: center;
+        justify-items: center;
+        gap: 24px;
+        padding: 24px 32px;
+      }
+
+      /* Vị trí từng ô trong lưới */
+      .char-title {
+        grid-area: title;
+        text-align: center;
+        font-weight: 800;
+        font-size: clamp(28px, 4vw, 48px);
+        line-height: 1;
+        color: #fff;
+      }
+
+      #tall {
+        grid-area: left;
+        align-self: end;
+      }
+      #hard {
+        grid-area: right;
+        align-self: end;
+      }
+
+      .info-col {
+        grid-column: 2;
+        width: 100%;
+        display: grid;
+        gap: 18px;
+      }
+      #tall_stats {
+        grid-row: 2 / span 2;
+        grid-template-rows: auto auto;
+      } /* stats + weapon */
+      #hard_stats {
+        grid-row: 2 / span 2;
+        grid-template-rows: auto auto;
+      }
+
+      /* Thẻ card trắng bo tròn như hình */
+      .card {
+        background: #fff;
+        color: #111;
+        border: 3px solid #000;
+        border-radius: 20px;
+        padding: 16px 18px;
+        width: 100%;
+        box-shadow: 0 10px 0 rgba(0, 0, 0, 0.18); /* viền đậm ở dưới như vẽ tay */
+      }
+      .card h3 {
+        margin-bottom: 8px;
+      }
+      .card p {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 20px;
+      }
+
+      /* Icon nhỏ trong dòng stats */
+      .icon {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+      }
+
+      /* Ảnh vũ khí to trong card */
+      .weapon-img {
+        width: 65%;
+        height: auto;
+        display: block;
+        margin: 6px auto 0;
+      }
+
+      /* 2 nút nhân vật bên trái/phải là ảnh lớn, có đổ bóng */
+      .char-side {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+      }
+      .char-side img {
+        width: min(28vw, 360px);
+        height: auto;
+        display: block;
+        filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.35));
+        transition: transform 0.2s ease;
+      }
+      .char-side:hover img {
+        transform: translateY(-4px) scale(1.02);
+      }
+
+      /* Nút home góc phải trên (tuỳ chọn) */
+      .home-btn {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.35);
+        color: #fff;
+        border: 2px solid #fff;
+      }
+
+      /* Bắt hidden phải ẩn thật (nếu trước đó bạn set display:flex) */
+      #tall_stats[hidden],
+      #hard_stats[hidden] {
+        display: none !important;
+      }
+
+      /* Mobile: thu nhỏ ảnh 2 bên, info chiếm rộng hơn */
+      @media (max-width: 768px) {
+        .char-grid {
+          grid-template-columns: 1fr clamp(280px, 70vw, 520px) 1fr;
+          gap: 16px;
+        }
+        .char-side img {
+          width: min(34vw, 260px);
+        }
+      }
+
+      /* === Two-Phase Boss UI === */
+      #bossWarning {
+        position: absolute;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 4vw;
+        font-weight: 900;
+        color: #fff;
+        text-shadow: 0 0 20px #f00, 0 0 40px #f00;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 9999;
+        animation: pulseWarn 0.6s ease-in-out infinite alternate;
+      }
+      @keyframes pulseWarn {
+        from {
+          transform: scale(1);
+          opacity: 0.9;
+        }
+        to {
+          transform: scale(1.05);
+          opacity: 1;
+        }
+      }
+      #bossHP {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 12px;
+        width: 64%;
+        height: 16px;
+        display: none;
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-radius: 10px;
+        overflow: hidden;
+        z-index: 9999;
+      }
+      #bossHPFill {
+        height: 100%;
+        width: 100%;
+        background: linear-gradient(90deg, #ff4d4d, #ff1a1a);
+      }
+
+      /* White dissolve overlay */
+      #fxDissolve {
+        background: transparent;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
